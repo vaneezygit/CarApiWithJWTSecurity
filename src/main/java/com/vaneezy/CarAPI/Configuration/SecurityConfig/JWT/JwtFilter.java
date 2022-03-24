@@ -53,6 +53,6 @@ public class JwtFilter extends UsernamePasswordAuthenticationFilter {
                 .withExpiresAt(Date.valueOf(LocalDate.now().plusDays(1)))
                 .sign(Algorithm.HMAC512("TyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebrolet".getBytes()));
 
-        response.addHeader("Authentication", "Bearer " + token);
+        response.addHeader("Authorization", "Bearer " + token);
     }
 }

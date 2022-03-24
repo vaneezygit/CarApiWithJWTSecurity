@@ -43,7 +43,7 @@ public class Car {
     public enum EngineType{
         @JsonProperty("diesel")
         DIESEL,
-        @JsonProperty("PETROL")
+        @JsonProperty("petrol")
         PETROL,
         @JsonProperty("electric")
         ELECTRIC

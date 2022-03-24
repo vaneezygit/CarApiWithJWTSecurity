@@ -33,7 +33,7 @@ public class CarDAO implements CarDAOInterface{
     @Override
     public Car getById(Long id) {
         Session session = sessionFactory.openSession();
-        Query<Car> carById = session.createQuery("FROM Car c" +
+        Query<Car> carById = session.createQuery("FROM Car c " +
                 "WHERE c.id = :id", Car.class);
         carById.setParameter("id", id);
         Car car = carById.getResultStream()

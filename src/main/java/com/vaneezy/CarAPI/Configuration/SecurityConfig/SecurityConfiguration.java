@@ -2,6 +2,7 @@ package com.vaneezy.CarAPI.Configuration.SecurityConfig;
 
 import com.vaneezy.CarAPI.Configuration.SecurityConfig.ApplicationUser.Role;
 import com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT.JwtFilter;
+import com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT.JwtVerifierFilter;
 import com.vaneezy.CarAPI.Services.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -32,9 +33,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new JwtFilter(authenticationManager()))
+                .addFilter(new JwtVerifierFilter(authenticationManager()))
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
-                .antMatchers("/api/**").hasAnyRole(Role.ADMIN.name(), Role.USER.name())
                 .anyRequest()
                 .authenticated();
     }
