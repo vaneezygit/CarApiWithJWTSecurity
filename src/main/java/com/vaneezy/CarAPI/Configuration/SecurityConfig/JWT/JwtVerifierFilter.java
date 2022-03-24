@@ -2,6 +2,9 @@ package com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,19 +18,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 
+@Setter
 public class JwtVerifierFilter extends BasicAuthenticationFilter {
 
-    public JwtVerifierFilter(AuthenticationManager authenticationManager) {
+    private JwtConfig jwtConfig;
+
+    public JwtVerifierFilter(JwtConfig jwtConfig,AuthenticationManager authenticationManager) {
         super(authenticationManager);
+        this.setJwtConfig(jwtConfig);
     }
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
 
-        String authHeader = request.getHeader("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        String authHeader = request.getHeader(jwtConfig.getHeader());
+        if(authHeader == null || !authHeader.startsWith(jwtConfig.getPrefix())){
             chain.doFilter(request, response);
             return;
         }
@@ -39,17 +48,15 @@ public class JwtVerifierFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request){
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(jwtConfig.getHeader());
 
         if(token != null){
-            String user = JWT.require(Algorithm.HMAC512("TyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebrolet".getBytes()))
+            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(jwtConfig.getSecret().getBytes()))
                     .build()
-                    .verify(token.replace("Bearer ", ""))
-                    .getSubject();
-            String role = JWT.require(Algorithm.HMAC512("TyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebroletTyTyTyEtoBebrolet".getBytes()))
-                    .build()
-                    .verify(token.replace("Bearer ", ""))
-                    .getClaim("Role").asString();
+                    .verify(token.replace(jwtConfig.getPrefix(), ""));
+
+            String user = decodedJWT.getSubject();
+            String role = decodedJWT.getClaim("Role").asString();
 
             if(user != null) return new UsernamePasswordAuthenticationToken(user,null,
                     Collections.singletonList(new SimpleGrantedAuthority(role))

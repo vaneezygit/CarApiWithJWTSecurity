@@ -1,6 +1,6 @@
 package com.vaneezy.CarAPI.Configuration.SecurityConfig;
 
-import com.vaneezy.CarAPI.Configuration.SecurityConfig.ApplicationUser.Role;
+import com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT.JwtConfig;
 import com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT.JwtFilter;
 import com.vaneezy.CarAPI.Configuration.SecurityConfig.JWT.JwtVerifierFilter;
 import com.vaneezy.CarAPI.Services.AppUserService;
@@ -20,6 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final AppUserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtConfig jwtConfig;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -32,8 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtFilter(authenticationManager()))
-                .addFilter(new JwtVerifierFilter(authenticationManager()))
+                .addFilter(new JwtFilter(jwtConfig, authenticationManager()))
+                .addFilter(new JwtVerifierFilter(jwtConfig, authenticationManager()))
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
                 .anyRequest()
