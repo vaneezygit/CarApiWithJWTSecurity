@@ -5,7 +5,9 @@ import com.vaneezy.CarAPI.Entity.Car;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Service @RequiredArgsConstructor
 public class CarService {
@@ -30,5 +32,9 @@ public class CarService {
 
     public void deleteCar(Long id) {
         carDAO.delete(id);
+    }
+
+    public Map<String, Object> carsWithPriceGreaterThan(BigDecimal sum, Integer limit, Integer offset) {
+        return carDAO.getCarsWherePriceGreaterThan(sum, limit, offset);
     }
 }
