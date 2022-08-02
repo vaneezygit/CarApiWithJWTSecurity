@@ -2,7 +2,10 @@ package com.vaneezy.CarAPI.DAO.CarDAO;
 
 import com.vaneezy.CarAPI.Entity.Car;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
